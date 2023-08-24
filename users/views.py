@@ -40,8 +40,8 @@ class RegisterView(APIView):
             sms.verification(payload)
             return otp
 
-        except APIException as e:
-            return Response({"error": e})
+        except :
+            return Response({"error": "e"})
 
     def post(self,request:Request):
         phoneNumber = request.data["phone"]
