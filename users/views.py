@@ -6,42 +6,31 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.core.cache import cache
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
-from .utils import Token
+from .token import Token
 import jwt,datetime
 from rest_framework import status
 from .models import User
 import math, random
 # from kavenegar import *
-import ghasedakpack
-
+from .sms import MessageSending
 from dotenv import load_dotenv
 import os
-load_dotenv()
+# load_dotenv()
 
 CACHE_TTL = getattr(settings, "CACHE_TTL", DEFAULT_TIMEOUT)
 
 
 class RegisterView(APIView):
     def send_otp(self,receptor):
-        API_KEY = os.getenv("API_KEY")
         digits = "0123456789"
         otp = ""
         for i in range(5):
             otp += digits[math.floor(random.random() * 10)]
-        try:
-            payload = {
-                'receptor': receptor,
-                "type": "1",  # 1:sms   2:voice
-                "template": "قالب شماره  1",
-                'param1': otp
-            }
 
-            sms = ghasedakpack.Ghasedak(API_KEY)
-            sms.verification(payload)
-            return otp
+        MessageSending.sending(receptor,1,"کد فعالسازی",otp)
 
-        except :
-            return Response({"error": "e"})
+        return otp
+
 
     def post(self,request:Request):
         phoneNumber = request.data["phone"]
@@ -67,12 +56,13 @@ class Check_otp(APIView):
                 raise AuthenticationFailed
             decoded_token=Token.decodeToken(token)
 
-            # if decoded_token.phone != value:
-            #     raise ValueError("phone number doesn't match.try again later!")
-            #
-            #
+            if decoded_token["phone"] != value:
+                raise ValueError("phone number doesn't match.try again later!")
+
+
+            decoded_token["is_active"]=True
             user = User.objects.get(phone=decoded_token["phone"])
-            serializer=UserSerializer(user,data=decoded_token,is_active=True)
+            serializer=UserSerializer(user,data=decoded_token)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data,status.HTTP_200_OK)
@@ -100,6 +90,15 @@ class LoginView(APIView):
         token=Token.generateToken(payload)
 
         return Response({"token":token},status.HTTP_200_OK)
+
+
+
+class ForgetPassword:
+    def post(self,request:Request):
+        phoneNumber=request.data["phone"]
+        user=User.objects.get(phone=phoneNumber)
+        if not user:
+            return Response({"error":"user not found"},status.HTTP_404_NOT_FOUND)
 
 
 class UserView(APIView):
