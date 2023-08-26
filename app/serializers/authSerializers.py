@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from users.models import User
+from app.models.authModel import User
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -34,3 +34,4 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"error":"password should be at least 8 characters"})
 
         return data
+

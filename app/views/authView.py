@@ -1,54 +1,42 @@
 from rest_framework.views import APIView
 from rest_framework.request import Request
-from .serializers import UserSerializer
+from app.serializers.authSerializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from django.core.cache import cache
-from django.conf import settings
-from django.core.cache.backends.base import DEFAULT_TIMEOUT
-from .token import Token
-import jwt,datetime
+from app.utils.token import Token
+import datetime
 from rest_framework import status
-from .models import User
-import math, random
-# from kavenegar import *
-from .sms import MessageSending
-from dotenv import load_dotenv
-import os
-# load_dotenv()
+from app.models.authModel import User
+from app.utils.sms import MessageSending
+from app.utils.send_otp import SendOtp
+from app.utils.validators import Validations
+from django.contrib.auth.hashers import make_password
+from app.utils.redisService import Redis
+redisObj=Redis()
 
-CACHE_TTL = getattr(settings, "CACHE_TTL", DEFAULT_TIMEOUT)
 
 
 class RegisterView(APIView):
-    def send_otp(self,receptor):
-        digits = "0123456789"
-        otp = ""
-        for i in range(5):
-            otp += digits[math.floor(random.random() * 10)]
-
-        MessageSending.sending(receptor,1,"کد فعالسازی",otp)
-
-        return otp
-
-
-    def post(self,request:Request):
+     def post(self,request:Request):
         phoneNumber = request.data["phone"]
         serializer=UserSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            otp_code = str(self.send_otp(phoneNumber))
-            cache.set(otp_code, phoneNumber  , timeout=CACHE_TTL)
-            print('not from cache')
+            otp_code = str(SendOtp.createOtp())
+
+            MessageSending.sending(phoneNumber, 1, "کد فعالسازی", otp_code)
+
+            redisObj.set_value(otp_code, phoneNumber)
+
             token=Token.generateToken(request.data)
             return Response({"message":"verify your phone number","token": token,"code":otp_code },status.HTTP_201_CREATED)
         return Response(None,status.HTTP_400_BAD_REQUEST)
 
 
-class Check_otp(APIView):
+class Check_otp_register(APIView):
     def post(self,request:Request):
         code=request.data['code']
-        value=cache.get(code)
+        value=redisObj.get_value(code)
         # return Response(value)
         if value!=None:
             token=request.META.get('HTTP_AUTHORIZATION', '')
@@ -99,7 +87,33 @@ class ForgetPassword:
         user=User.objects.get(phone=phoneNumber)
         if not user:
             return Response({"error":"user not found"},status.HTTP_404_NOT_FOUND)
+        otp_code=SendOtp.createOtp()
+        redisObj.set_value(otp_code,phoneNumber)
+        MessageSending.sending(phoneNumber, 1, "کد تایید", otp_code)
+        token=Token.generateToken({"phone":phoneNumber})
+        return Response({"message":"کد تایید ارسال شد","token":token})
 
+
+class Check_otp_password:       #check otp code and new password is in a single page
+    def post(self,request:Request):
+        code = request.data['code']
+        value = redisObj.get_value(code)
+        data = request.data
+
+        if value==None:
+            return Response({"error":"code is wrong"},status.HTTP_404_NOT_FOUND)
+
+        if not data["token"]:
+            raise AuthenticationFailed
+
+        validation = Validations()
+        validation.emptyCheck( data )
+        validation.check_password(data["password"])
+        validation.checkConfirm_and_pass(data["password"],data["confirmPassword"])
+
+        user=User.objects.get(phone=data["phone"])
+        user.password=make_password(data["password"])
+        user.save()
 
 class UserView(APIView):
     def get(self,request:Request):
