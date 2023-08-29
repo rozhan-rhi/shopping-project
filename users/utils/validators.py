@@ -1,18 +1,19 @@
 class Validations:
-    def emptyCheck(self,**kwargs):
+    def emptyCheck(self,kwargs):
         dict_keys=kwargs.keys()
         for item in dict_keys:
-            value = str(kwargs[item])
+            value = str(kwargs[item]).strip()
             if len(value) <1:
-                raise ValueError("empty string")
+                return True
 
 
     def check_password(self,password):
         if len(password) < 8:
-            raise ValueError("password is shorter than 8")
+            return True
+
 
     def checkConfirm_and_pass(self,password,confirmPassword):
         if password != confirmPassword :
-            raise ValueError("password and confirm password are not equal")
+            return True
 
 

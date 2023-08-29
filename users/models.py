@@ -6,7 +6,7 @@ class User(AbstractUser):
     email = models.EmailField(max_length=250,unique=True)
     password = models.CharField(max_length=250)
     phone = models.CharField(max_length=255,unique=True)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     username = None
 
     USERNAME_FIELD = 'email'
