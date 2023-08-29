@@ -14,13 +14,24 @@ from django.contrib.auth.hashers import make_password
 from users.utils.validators import Validations
 import re
 import os
+from drf_yasg.utils import swagger_auto_schema
 from users.utils.redisService import Redis
 redisObj=Redis()
 validation=Validations()
 
 
 class RegisterView(APIView):
-     def post(self,request:Request):
+
+    @swagger_auto_schema(
+        query_serializer=UserSerializer,
+        responses={
+            '200': "ok",
+            '400': "Bad Request"
+        },
+        security=[],
+        operation_description='get phone number to check verification'
+    )
+    def post(self,request:Request):
         phoneNumber = request.data["phone"]
         phone_pattern = re.compile(os.getenv("PHONE_REGEX"))
 
@@ -39,6 +50,16 @@ class RegisterView(APIView):
 
 
 class Check_otp_register(APIView):
+    @swagger_auto_schema(
+        query_serializer=UserSerializer,
+        responses={
+            '200': "ok",
+            '400': "Bad Request"
+        },
+        security=[],
+        operation_description='check otp code and create new model'
+    )
+
     def post(self,request:Request):
         data=request.data
         print(data)
@@ -74,6 +95,15 @@ class Check_otp_register(APIView):
         return Response({"message":"code is incorrect or has been expired.try again!"})
 
 class LoginView(APIView):
+    @swagger_auto_schema(
+        query_serializer=UserSerializer,
+        responses={
+            '200': "ok",
+            '400': "Bad Request"
+        },
+        security=[],
+        operation_description='get phone number and password to login'
+    )
     def post(self,request:Request):
         phone=request.data['phone']
         password=request.data['password']
@@ -102,6 +132,15 @@ class LoginView(APIView):
 
 
 class ForgetPassword(APIView):
+    @swagger_auto_schema(
+        query_serializer=UserSerializer,
+        responses={
+            '200': "ok",
+            '400': "Bad Request"
+        },
+        security=[],
+        operation_description='get phone number to send otp code'
+    )
     def post(self,request:Request):
         phoneNumber=request.data["phone"]
         user=User.objects.filter(phone=phoneNumber).first()
@@ -115,6 +154,15 @@ class ForgetPassword(APIView):
 
 
 class ResetPassword(APIView):       #check otp code and new password is in a single page
+    @swagger_auto_schema(
+        query_serializer=UserSerializer,
+        responses={
+            '200': "ok",
+            '400': "Bad Request"
+        },
+        security=[],
+        operation_description='check otp code and set new password'
+    )
     def post(self,request:Request):
         data = request.data
         phone = redisObj.get_value(data['code'])
@@ -149,6 +197,15 @@ class ResetPassword(APIView):       #check otp code and new password is in a sin
 
 
 class UserView(APIView):
+    @swagger_auto_schema(
+        query_serializer=UserSerializer,
+        responses={
+            '200': "ok",
+            '400': "Bad Request"
+        },
+        security=[],
+        operation_description='show user based on id'
+    )
     def get(self,request:Request):
         token=request.META.get('HTTP_AUTHORIZATION', '')
         if not token:
