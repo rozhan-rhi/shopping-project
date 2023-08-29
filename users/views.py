@@ -1,17 +1,17 @@
 from rest_framework.views import APIView
 from rest_framework.request import Request
-from app.serializers.authSerializers import UserSerializer
+from users.serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from app.utils.token import Token
+from .utils.token import Token
 import datetime
 from rest_framework import status
-from app.models.authModel import User
-from app.utils.sms import MessageSending
-from app.utils.send_otp import SendOtp
-from app.utils.validators import Validations
+from users.models import User
+from users.utils.sms import MessageSending
+from users.utils.send_otp import SendOtp
+from users.utils.validators import Validations
 from django.contrib.auth.hashers import make_password
-from app.utils.redisService import Redis
+from users.utils.redisService import Redis
 redisObj=Redis()
 
 
@@ -28,7 +28,7 @@ class RegisterView(APIView):
 
             redisObj.set_value(otp_code, phoneNumber)
 
-            token=Token.generateToken(request.data)
+            token= Token.generateToken(request.data)
             return Response({"message":"verify your phone number","token": token,"code":otp_code },status.HTTP_201_CREATED)
         return Response(None,status.HTTP_400_BAD_REQUEST)
 
@@ -64,7 +64,10 @@ class LoginView(APIView):
         user=User.objects.filter(phone=phone).first()
         if user is None:
             raise AuthenticationFailed("user not found!")
+        elif user.is_active== False:
+            raise AuthenticationFailed("user is not active")
 
+        print(user.password,password)
         if not user.check_password(password):
             raise AuthenticationFailed("password is wrong!")
 
@@ -81,7 +84,7 @@ class LoginView(APIView):
 
 
 
-class ForgetPassword:
+class ForgetPassword(APIView):
     def post(self,request:Request):
         phoneNumber=request.data["phone"]
         user=User.objects.get(phone=phoneNumber)
@@ -94,11 +97,10 @@ class ForgetPassword:
         return Response({"message":"کد تایید ارسال شد","token":token})
 
 
-class Check_otp_password:       #check otp code and new password is in a single page
+class ResetPassword(APIView):       #check otp code and new password is in a single page
     def post(self,request:Request):
-        code = request.data['code']
-        value = redisObj.get_value(code)
         data = request.data
+        value = redisObj.get_value(data['code'])
 
         if value==None:
             return Response({"error":"code is wrong"},status.HTTP_404_NOT_FOUND)

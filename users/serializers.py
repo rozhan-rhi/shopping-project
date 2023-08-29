@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from app.models.authModel import User
+from users.models import User
+from django.contrib.auth.hashers import make_password
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -17,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
         password=validated_data.pop("password",None)
         instance=self.Meta.model(**validated_data)
         if password is not None:
-            instance.set_password(password)
+            instance.set_password(make_password(password))
         instance.save()
         return instance
 

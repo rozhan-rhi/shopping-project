@@ -1,7 +1,7 @@
 
 from django.core.cache import cache
 from django.conf import settings
-settings.configure()
+# settings.configure()
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 
 class Redis:
