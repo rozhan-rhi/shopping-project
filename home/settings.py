@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'products',
     'rest_framework',
     'drf_yasg',
+
 ]
 
 CACHE_TTL = 900
@@ -54,12 +56,6 @@ CACHES = {
     }
 }
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379",
-#     }
-# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -97,10 +93,12 @@ WSGI_APPLICATION = 'home.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': 'shopping',
     }
 }
+
+
 
 
 
