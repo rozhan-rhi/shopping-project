@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
-from .models import ProductModel
-from products.serializers import ProductListSerializer,ProductDetailSerializer
+from .models import ProductModel,ChartModel
+from products.serializers import ProductListSerializer,ProductDetailSerializer,ChartSerializer
 from drf_yasg.utils import swagger_auto_schema
 from home.utils import token
 from rest_framework.exceptions import AuthenticationFailed
@@ -58,3 +58,24 @@ class ProductsListCreate(APIView):
         allProducts = ProductModel.objects.all()
         serializer = ProductListSerializer(allProducts, many=True)
         return Response({"message": serializer.data}, status.HTTP_200_OK)
+
+
+class SortAscPrice(APIView):       # ascending order.
+    def get(self,request:Request):
+        allProducts = ProductModel.objects.all().order_by("current_price")
+        serializer = ProductListSerializer(allProducts, many=True)
+        return Response({"message": serializer.data}, status.HTTP_200_OK)
+
+class SortDescPrice(APIView):       #descending order
+    def get(self,request:Request):
+        allProducts = ProductModel.objects.all().order_by("-current_price")
+        serializer = ProductListSerializer(allProducts, many=True)
+        return Response({"message": serializer.data}, status.HTTP_200_OK)
+
+class ChartList(APIView):
+    def get_product_list(self,prod_id):
+        values=ChartModel.objects.filter(product_id=prod_id)
+        return values
+    def get(self,request:Request,prod_id):
+        serializer=ChartSerializer(self.get_product_list(prod_id),many=True)
+        return Response(serializer.data)

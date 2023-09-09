@@ -4,7 +4,7 @@ from .models import ChartModel
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
-        fields=('id','title','description')     #'thumb',
+        fields=('id','title','description','current_price')     #'thumb',
 
 
 
