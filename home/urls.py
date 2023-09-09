@@ -21,7 +21,7 @@ from .yasg import urlpatterns as doc_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/",include('users.urls')),
-    path("/",include('products.urls'))
+    path("",include('products.urls'))
 
 ]
 

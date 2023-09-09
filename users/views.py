@@ -3,19 +3,18 @@ from rest_framework.request import Request
 from users.serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from .utils.token import Token
+from home.utils.token import Token
 import datetime
 from rest_framework import status
 from users.models import User
-from users.utils.sms import MessageSending
-from users.utils.send_otp import SendOtp
-from users.utils.validators import Validations
+from home.utils.sms import MessageSending
+from home.utils.send_otp import SendOtp
 from django.contrib.auth.hashers import make_password
-from users.utils.validators import Validations
+from home.utils.validators import Validations
 import re
 import os
 from drf_yasg.utils import swagger_auto_schema
-from users.utils.redisService import Redis
+from home.utils.redisService import Redis
 redisObj=Redis()
 validation=Validations()
 
@@ -84,7 +83,7 @@ class Check_otp_register(APIView):
 
 
             data["phone"] = phone
-            print(type(request.data))
+            # print(type(request.data))
 
             serializer=UserSerializer(data=request.data)
             if serializer.is_valid(raise_exception=True):

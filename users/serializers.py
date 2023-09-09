@@ -1,9 +1,8 @@
 from rest_framework import serializers
 from users.models import User
-from django.contrib.auth.hashers import make_password
 from dotenv import load_dotenv
 load_dotenv()
-from users.utils.validators import Validations
+from home.utils.validators import Validations
 validation=Validations()
 
 class UserSerializer(serializers.ModelSerializer):
