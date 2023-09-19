@@ -27,9 +27,26 @@ class CategoryDetail(APIView):
 
     def put(self, request: Request,pk):
         category=self.get_category(pk)
-        parent = request.parent
-        serializer = CategorySerializer(data=request.data, context={'parent': parent})
+        serializer = CategorySerializer(category,data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status.HTTP_200_OK)
+        return Response({"message":"error"},status.HTTP_406_NOT_ACCEPTABLE)
 
     def delete(self, request: Request,pk):
         category=self.get_category(pk)
         category.delete()
+        return Response({"message":"category deleted"}, status.HTTP_200_OK)
+
+    def get(self, request: Request,pk):
+        category=self.get_category(pk)
+        serializer=CategorySerializer(category)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+
+class CategoryList(APIView):
+    def get(self,request:Request):
+        categories=CategoryModel.objects.all()
+        serializer=CategorySerializer(categories,many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
+

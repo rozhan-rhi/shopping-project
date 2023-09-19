@@ -3,5 +3,4 @@ from .models import CategoryModel
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model=CategoryModel
-        fields='__all__'
-
+        fields=("id","title","parent")

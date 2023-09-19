@@ -20,11 +20,6 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         #     "thumbnail": {"write_only": True}
         # }
 
-    # def validate(self, kwargs):
-    #     existance=ProductModel.objects.filter(title=kwargs["title"]).first()
-    #     if existance:
-    #         raise serializers.ValidationError("product with this name exists!")
-
 
 class ChartSerializer(serializers.ModelSerializer):
     class Meta:
