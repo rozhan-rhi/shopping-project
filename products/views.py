@@ -9,6 +9,8 @@ from home.utils import token
 from rest_framework.exceptions import AuthenticationFailed
 from users.models import User
 from django.http import Http404
+from rest_framework.parsers import FormParser, MultiPartParser
+
 
 
 class ProductDetail(APIView):
@@ -39,7 +41,6 @@ class ProductDetail(APIView):
 
 
 class ProductsListCreate(APIView):
-
     def post(self, request: Request):
         product = request.data
         # print(product)
@@ -55,22 +56,28 @@ class ProductsListCreate(APIView):
             return Response({"message": "try another title name,this title exists!"}, status.HTTP_400_BAD_REQUEST)
 
     def get(self,request:Request):
+
+        q=self.request.query_params.get('sort')
+        word=self.request.query_params.get('search')
+        sort_option= {
+            "0":"",
+            "1":"current_price",
+            "2":"-current_price"
+        }
         allProducts = ProductModel.objects.all()
+        if sort_option[q]!="" and word==None:
+            allProducts = allProducts.order_by(sort_option[q])
+
+        elif sort_option[q]!="" and word!=None:
+            allProducts=ProductModel.objects.filter(title__contains=word).order_by(sort_option[q])
+
+        elif sort_option[q] == "" and word != None:
+            allProducts = ProductModel.objects.filter(title__contains=word)
+
         serializer = ProductListSerializer(allProducts, many=True)
         return Response({"message": serializer.data}, status.HTTP_200_OK)
 
 
-class SortAscPrice(APIView):       # ascending order.
-    def get(self,request:Request):
-        allProducts = ProductModel.objects.all().order_by("current_price")
-        serializer = ProductListSerializer(allProducts, many=True)
-        return Response({"message": serializer.data}, status.HTTP_200_OK)
-
-class SortDescPrice(APIView):       #descending order
-    def get(self,request:Request):
-        allProducts = ProductModel.objects.all().order_by("-current_price")
-        serializer = ProductListSerializer(allProducts, many=True)
-        return Response({"message": serializer.data}, status.HTTP_200_OK)
 
 class ChartList(APIView):
     def get_product_list(self,prod_id):
@@ -78,4 +85,26 @@ class ChartList(APIView):
         return values
     def get(self,request:Request,prod_id):
         serializer=ChartSerializer(self.get_product_list(prod_id),many=True)
+        return Response(serializer.data)
+
+
+class Search(APIView):
+    sort_option={
+        "0":None,
+        "1":"current_price",
+        "2":"-current_price"
+    }
+    def get(self,request:Request):
+        word=self.request.query_params["search"]
+        q=self.request.query_params["sort_by"]
+        productsList=ProductModel.objects.filter(title__contains=word).order_by(sort_option[q])
+        print(productsList)
+        serializer=ProductListSerializer(productsList,many=True)
+        return Response(serializer.data)
+
+class SearchTitleAsc(APIView):
+    def get(self,request:Request):
+        word=request.query_params["search"]
+        productsList=ProductModel.objects.filter(title__contains=word).order_by("current_price")
+        serializer=ProductListSerializer(productsList,many=True)
         return Response(serializer.data)

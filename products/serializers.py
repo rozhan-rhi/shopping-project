@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import ProductModel
-from .models import ChartModel
+from .models import ProductModel,ChartModel
+
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
-        fields=('id','title','description','current_price')     #'thumb',
+        fields=('id','title','description','current_price','thumbnail')
 
 
 
@@ -12,7 +12,8 @@ class ProductListSerializer(serializers.ModelSerializer):
 class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
-        fields=('id','title','vendor','description','unit','Weight','desiredـtitle','value','current_price') #'thumbnail','picture',
+        fields='__all__'
+            # ('id','title','vendor','description','unit','Weight','desiredـtitle','value','current_price','thumbnail','picture')
         # extra_kwargs = {
         #     "thumbnail": {"write_only": True}
         # }
@@ -27,3 +28,5 @@ class ChartSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChartModel
         fields= '__all__'
+
+

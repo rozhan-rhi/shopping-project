@@ -1,13 +1,17 @@
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from category.models import CategoryModel
 import datetime
+from PIL import Image
+
+
 
 class ProductModel(models.Model):
 
     title=models.CharField(max_length=255,unique=True)
-    # thumbnail=models.ImageField(upload_to='photos')
-    # picture=models.ImageField(upload_to='photos')
+    thumbnail=models.ImageField(upload_to='thumnails/',blank=True)
+    picture=models.ImageField(upload_to="pictures/",blank=True)
     vendor=models.CharField(max_length=50)
     description=models.CharField(max_length=255)
     unit=models.CharField(max_length=50,default="kg")
@@ -15,6 +19,7 @@ class ProductModel(models.Model):
     desiredـtitle=models.CharField(max_length=255,default="height")     #this can be Height or Diameter
     value=models.FloatField()     #this is the value of Height or Diameter
     current_price=models.IntegerField()
+    category=models.ForeignKey(CategoryModel,on_delete=models.CASCADE,default="",blank=True)
     class Meta:
         db_table = "products"
 
@@ -27,13 +32,10 @@ def post_save_handler(sender,instance,**kwargs):
 
 class ChartModel(models.Model):
     price=models.IntegerField()
-    date=models.DateField()
+    date=models.DateField(auto_now_add=True)
     product_id=models.ForeignKey(ProductModel,on_delete=models.CASCADE)
 
     class Meta:
         db_table = "chart"
 
 
-class Category(models.Model):
-    title=models.CharField(max_length=255)
-    parent=models.ForeignKey(to="self",blank=True,null=True,on_delete=models.CASCADE)
