@@ -20,9 +20,10 @@ class CategoryDetail(APIView):
         # parent=request.data["parent"]
         # parent_id=CategoryModel.objects.filter(title=parent)
         serializer=CategorySerializer(data=request.data)        #context={'parent':request.data["parent"]}
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+        return Response({"message":"error"})
 
     def put(self, request: Request,pk):
         category=self.get_category(pk)

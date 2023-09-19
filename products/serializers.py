@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import ProductModel,ChartModel
+from category.serializers import CategorySerializer
 
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,6 +11,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
+    category=CategorySerializer()
     class Meta:
         model = ProductModel
         fields='__all__'

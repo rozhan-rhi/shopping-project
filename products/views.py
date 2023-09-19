@@ -86,25 +86,3 @@ class ChartList(APIView):
     def get(self,request:Request,prod_id):
         serializer=ChartSerializer(self.get_product_list(prod_id),many=True)
         return Response(serializer.data)
-
-
-class Search(APIView):
-    sort_option={
-        "0":None,
-        "1":"current_price",
-        "2":"-current_price"
-    }
-    def get(self,request:Request):
-        word=self.request.query_params["search"]
-        q=self.request.query_params["sort_by"]
-        productsList=ProductModel.objects.filter(title__contains=word).order_by(sort_option[q])
-        print(productsList)
-        serializer=ProductListSerializer(productsList,many=True)
-        return Response(serializer.data)
-
-class SearchTitleAsc(APIView):
-    def get(self,request:Request):
-        word=request.query_params["search"]
-        productsList=ProductModel.objects.filter(title__contains=word).order_by("current_price")
-        serializer=ProductListSerializer(productsList,many=True)
-        return Response(serializer.data)
