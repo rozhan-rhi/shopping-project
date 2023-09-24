@@ -84,12 +84,15 @@ class Check_otp_register(APIView):
 
             data["phone"] = phone
             # print(type(request.data))
-
-            serializer=UserSerializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return Response(serializer.data,status.HTTP_200_OK)
-            return Response(None,status.HTTP_400_BAD_REQUEST)
+            try:
+                serializer=UserSerializer(data=request.data)
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
+                    return Response(serializer.data,status.HTTP_200_OK)
+                return Response(None,status.HTTP_400_BAD_REQUEST)
+            except Exception as err:
+                print(err)
+                raise err
 
         return Response({"message":"code is incorrect or has been expired.try again!"})
 

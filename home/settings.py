@@ -97,6 +97,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'shopping',
+
     }
 }
 

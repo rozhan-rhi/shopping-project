@@ -8,6 +8,8 @@ from django.http import Http404
 from drf_yasg.utils import swagger_auto_schema
 
 
+
+
 class CategoryDetail(APIView):
     def get_category(self,pk):
         try:
@@ -15,15 +17,6 @@ class CategoryDetail(APIView):
             return category
         except CategoryModel.DoesNotExist:
             raise Http404
-
-    def post(self,request:Request):
-        # parent=request.data["parent"]
-        # parent_id=CategoryModel.objects.filter(title=parent)
-        serializer=CategorySerializer(data=request.data)        #context={'parent':request.data["parent"]}
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
-        return Response({"message":"error"})
 
     def put(self, request: Request,pk):
         category=self.get_category(pk)
@@ -49,4 +42,12 @@ class CategoryList(APIView):
         categories=CategoryModel.objects.all()
         serializer=CategorySerializer(categories,many=True)
         return Response(serializer.data, status.HTTP_200_OK)
+
+    def post(self,request:Request):
+        serializer=CategorySerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            print(serializer.data)
+            return Response(serializer.data,status.HTTP_201_CREATED)
+        return Response({"message":"error"},status.HTTP_406_NOT_ACCEPTABLE)
 
