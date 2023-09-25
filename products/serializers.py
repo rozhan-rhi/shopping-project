@@ -7,6 +7,12 @@ class ProductListSerializer(serializers.ModelSerializer):
         model = ProductModel
         fields=('id','title','description','current_price','thumbnail')
 
+    def validate(self, attrs):
+        product=ProductModel.objects.filter(title=attrs["title"],category=attrs["category"]).first()
+        print(attrs["category"])
+        if product:
+            raise serializers.ValidationError("there is a same product with this category!")
+
 
 
 
@@ -16,9 +22,9 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         model = ProductModel
         fields='__all__'
             # ('id','title','vendor','description','unit','Weight','desiredـtitle','value','current_price','thumbnail','picture')
-        # extra_kwargs = {
-        #     "thumbnail": {"write_only": True}
-        # }
+        extra_kwargs = {
+            "thumbnail": {"write_only": True}
+        }
 
 
 class ChartSerializer(serializers.ModelSerializer):

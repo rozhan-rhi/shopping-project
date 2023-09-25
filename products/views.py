@@ -58,9 +58,10 @@ class ProductsListCreate(APIView):
     def get(self,request:Request):
 
         q=self.request.query_params.get('sort')
+        print(q)
         word=self.request.query_params.get('search')
         sort_option= {
-            "0":"",
+            None:"",
             "1":"current_price",
             "2":"-current_price"
         }

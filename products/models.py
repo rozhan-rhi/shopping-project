@@ -8,7 +8,6 @@ from PIL import Image
 
 
 class ProductModel(models.Model):
-
     title=models.CharField(max_length=255,unique=True)
     thumbnail=models.ImageField(upload_to='thumnails/',blank=True)
     picture=models.ImageField(upload_to="pictures/",blank=True)
@@ -39,3 +38,16 @@ class ChartModel(models.Model):
         db_table = "chart"
 
 
+
+
+# {
+#     "title" : "rozhan",
+#     "vendor":  "rozhan",
+#     "description" : "this is  "rozhan",
+#     "unit" : "kg",
+#     "Weight" : 20,
+#     "desiredـtitle" : "height",
+#     "value" : 12.5 ,
+#     "current_price" : 2000,
+#     "category" : 12
+# }

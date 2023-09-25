@@ -6,9 +6,8 @@ class CategorySerializer(serializers.ModelSerializer):
         fields=("id","title","parent")
 
     def validate(self, attrs):
-        title=CategoryModel.objects.filter(title=attrs["title"]).first()
-        print(attrs["parent"])
-        if title :
-            raise serializers.ValidationError("Name already exists!")
+        category=CategoryModel.objects.filter(title=attrs["title"],parent=attrs["parent"]).first()
+        if category:
+            raise serializers.ValidationError("Name already exists by this parent!")
         return attrs
 
