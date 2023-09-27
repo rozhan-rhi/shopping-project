@@ -43,12 +43,15 @@ class ProductDetail(APIView):
 class ProductsListCreate(APIView):
     def post(self, request: Request):
         product = request.data
-        # print(product)
         serializer = ProductDetailSerializer(data=product)
+        # print(product)
+
         try:
+
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                # print(serializer.data)
+                print(serializer.data)
+
                 return Response({"message": "new product saved!"}, status.HTTP_201_CREATED)
 
         except Exception as e:
