@@ -24,7 +24,19 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         return ProductModel.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance
+        instance.title =validated_data.get("title",instance.title)
+        instance.thumbnail = validated_data.get("thumbnail",instance.thumbnail)
+        instance.picture = validated_data.get("picture",instance.picture)
+        instance.vendor = validated_data.get("vendor",instance.vendor)
+        instance.description = validated_data.get("description",instance.description)
+        instance.unit = validated_data.get("unit",instance.unit)
+        instance.Weight = validated_data.get("Weight",instance.Weight)
+        instance.desiredـtitle = validated_data.get("desiredـtitle",instance.desiredـtitle)
+        instance.value = validated_data.get("value",instance.value)
+        instance.current_price = validated_data.get("current_price",instance.current_price)
+        instance.category =validated_data.get("category",instance.category)
+        instance.save()
+        return instance
 
 
 class ChartSerializer(serializers.ModelSerializer):

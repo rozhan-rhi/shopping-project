@@ -4,22 +4,20 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import ProductModel,ChartModel
 from products.serializers import ProductListSerializer,ProductDetailSerializer,ChartSerializer
-from drf_yasg.utils import swagger_auto_schema
-from home.utils import token
-from rest_framework.exceptions import AuthenticationFailed
-from users.models import User
 from django.http import Http404
-from rest_framework.parsers import FormParser, MultiPartParser
 
 
 
 class ProductDetail(APIView):
+
+
     def get_product(self, pk: int):
         try:
             product = ProductModel.objects.get(id=pk)
             return product
         except ProductModel.DoesNotExist:
             raise Http404
+
 
     def get(self, request: Request, pk):
         product = self.get_product(pk)

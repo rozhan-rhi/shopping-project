@@ -38,6 +38,7 @@ class CategoryDetail(APIView):
 
 
 class CategoryList(APIView):
+
     def get(self,request:Request):
         categories=CategoryModel.objects.all()
         serializer=CategorySerializer(categories,many=True)
