@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import ProductModel,ChartModel
+from category.serializers import CategorySerializer
+from category.models import CategoryModel
 
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,6 +11,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = ProductModel
         fields='__all__'
@@ -16,12 +19,13 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             "thumbnail": {"write_only": True}
         }
 
+
     def create(self, validated_data):
         product = ProductModel.objects.filter(title=validated_data["title"], category=validated_data["category"]).first()
-        print(validated_data["category"])
         if product:
             raise serializers.ValidationError("there is a same product with this category!")
-        return ProductModel.objects.create(**validated_data)
+        newProduct=ProductModel.objects.create(**validated_data)
+        return newProduct
 
     def update(self, instance, validated_data):
         instance.title =validated_data.get("title",instance.title)

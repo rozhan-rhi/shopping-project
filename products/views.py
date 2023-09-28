@@ -54,7 +54,7 @@ class ProductsListCreate(APIView):
 
         except Exception as e:
             print(e)
-            return Response({"message": "try another title name,this title exists!"}, status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "there is a same product with this category!"}, status.HTTP_400_BAD_REQUEST)
 
     def get(self,request:Request):
 

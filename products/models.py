@@ -8,7 +8,7 @@ from PIL import Image
 
 
 class ProductModel(models.Model):
-    title=models.CharField(max_length=255,unique=True)
+    title=models.CharField(max_length=255)
     thumbnail=models.ImageField(upload_to='thumnails/',blank=True,null=True)
     picture=models.ImageField(upload_to="pictures/",blank=True,null=True)
     vendor=models.CharField(max_length=50)
