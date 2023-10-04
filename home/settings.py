@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'users',
     'products',
     'category',
+    'cart',
     'rest_framework',
     'drf_yasg',
 
@@ -93,14 +94,15 @@ WSGI_APPLICATION = 'home.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'shopping',
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'shopping',
+#
+#     }
+# }
 
-    }
-}
-
+import mongoengine
 
 
 
