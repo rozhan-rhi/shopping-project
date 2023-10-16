@@ -1,11 +1,9 @@
-# from django.db import models
+from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from category.models import SubCategoryModel
+from category.models import CategoryModel
 import datetime
-from djongo import models
-from django import forms
-
+# from djongo import models
 
 
 class ProductModel(models.Model):
@@ -19,10 +17,13 @@ class ProductModel(models.Model):
     desiredـtitle=models.CharField(max_length=255,default="height")     #this can be Height or Diameter
     value=models.FloatField()     #this is the value of Height or Diameter
     current_price=models.IntegerField()
-    category=models.ArrayReferenceField(to=SubCategoryModel,on_delete=models.CASCADE)
-    # category=models.ForeignKey(CategoryModel,on_delete=models.CASCADE,default="",blank=True)
+    # category=models.ArrayReferenceField(to=SubCategoryModel,on_delete=models.CASCADE)
+    category=models.ForeignKey(CategoryModel,on_delete=models.CASCADE)
     class Meta:
         db_table = "products"
+
+    def __str__(self):
+        return self.title
 
 @receiver(post_save,sender=ProductModel)
 def post_save_handler(sender,instance,**kwargs):
@@ -41,13 +42,6 @@ class ChartModel(models.Model):
 
 
 
-
-# class ProductForm(forms.ModelForm):
-#     class Meta:
-#         model = ProductModel
-#         fields = (
-#             'title', 'thumbnail','picture'
-#         )
 
 
 # {
