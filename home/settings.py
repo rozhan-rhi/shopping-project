@@ -95,16 +95,16 @@ WSGI_APPLICATION = 'home.wsgi.application'
 
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'mysql',
-#         'USER': 'user1',
-#         'PASSWORD': 'SHopSql@1402',
-#         'HOST':'localhost',
-#         'PORT':'3306',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mysql',
+        'USER': 'user1',
+        'PASSWORD': 'SHopSql@1402',
+        'HOST':'localhost',
+        'PORT':'3306',
+    }
+}
 
 
 
