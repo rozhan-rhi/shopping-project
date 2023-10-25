@@ -21,6 +21,8 @@ from django.urls import path,include
 from .yasg import urlpatterns as doc_urls
 from django.conf.urls.static import static
 from django.conf import settings
+from azbankgateways.urls import az_bank_gateways_urls
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +30,8 @@ urlpatterns = [
     path("",include('products.urls')),
     path("", include('category.urls')),
     path("", include('cart.urls')),
+    path('bankgateways/', az_bank_gateways_urls()),
+
     ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns+= doc_urls
