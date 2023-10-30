@@ -7,14 +7,14 @@ from rest_framework.exceptions import AuthenticationFailed
 from home.utils.token import Token
 from cart.serializers import OrderSerializer,OrderItemsSerializer,CartSerializer
 from users.models import User
-from home.decorators.authDecorator import checkJwt_decorator
+from home.middleware.authMiddleware import AdminAuthMiddleware
 # from django.utils.decorators import method_decorator
 # from home.middleware.authMiddleware //import CheckJwtMiddleware,custom_middleware_decorator
 
 
 # @method_decorator(CheckJwtMiddleware,name='dispatch')
 class AddToCart(APIView):
-    @checkJwt_decorator
+    # @AdminAuthMiddleware
     def post(self,request:Request):
         print(request.decoded)
         token = request.META.get('HTTP_AUTHORIZATION', '')

@@ -11,7 +11,7 @@ from django.utils.decorators import wraps
 
 def checkJwt_decorator(view_func):
     
-    sign_key = os.getenv("SECRET_JWT")
+    # sign_key = os.getenv("SECRET_JWT")
     @wraps(view_func)
     def wrapper(request,*args,**kwargs):
         CheckJwtMiddleware()

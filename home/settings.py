@@ -70,7 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'home.middleware.authMiddleware.CheckJwtMiddleware'
+    'home.middleware.authMiddleware.AdminAuthMiddleware'
 ]
 
 ROOT_URLCONF = 'home.urls'
@@ -98,8 +98,8 @@ WSGI_APPLICATION = 'home.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mysql',
-        'USER': 'user1',
+        'NAME': 'shopping',
+        'USER': 'user3',
         'PASSWORD': 'SHopSql@1402',
         'HOST':'localhost',
         'PORT':'3306',
@@ -163,7 +163,7 @@ MEDIA_URL = '/media/'
 AZ_IRANIAN_BANK_GATEWAYS = {
    'GATEWAYS': {
        'IDPAY': {
-           'MERCHANT_CODE': '<YOUR MERCHANT CODE>',
+           'MERCHANT_CODE': '7fcd39f4-b134-41fb-a909-e866105b0666',
            'METHOD': 'POST',  # GET or POST
            'X_SANDBOX': 0,  # 0 disable, 1 active
        }
