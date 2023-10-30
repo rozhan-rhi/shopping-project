@@ -4,12 +4,12 @@ import os
 load_dotenv()
 from django.http import HttpResponseNotFound,HttpResponseForbidden
 
-class AdminAuthMiddleware:
+class JwtMiddleware:
     def __init__(self,get_response) :
         self.get_response=get_response
         
     def __call__(self,request):
-        if request.path.startswith('/cart/'):
+        if request.path.startswith('/cart/') or request.path.startswith('/payment/'):
             sign_key = os.getenv("SECRET_JWT")
             print(sign_key)
             try :

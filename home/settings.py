@@ -70,7 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'home.middleware.authMiddleware.AdminAuthMiddleware'
+    'home.middleware.authMiddleware.JwtMiddleware'
 ]
 
 ROOT_URLCONF = 'home.urls'

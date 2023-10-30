@@ -7,7 +7,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from home.utils.token import Token
 from cart.serializers import OrderSerializer,OrderItemsSerializer,CartSerializer
 from users.models import User
-from home.middleware.authMiddleware import AdminAuthMiddleware
+from home.middleware.authMiddleware import JwtMiddleware
 # from django.utils.decorators import method_decorator
 # from home.middleware.authMiddleware //import CheckJwtMiddleware,custom_middleware_decorator
 
@@ -17,16 +17,16 @@ class AddToCart(APIView):
     # @AdminAuthMiddleware
     def post(self,request:Request):
         print(request.decoded)
-        token = request.META.get('HTTP_AUTHORIZATION', '')
-        if not token:
-            raise AuthenticationFailed
-        decoded_token = Token.decodeToken(token)
-        order = Order.objects.filter(user=decoded_token["id"]).first()
+        # token = request.META.get('HTTP_AUTHORIZATION', '')
+        # if not token:
+        #     raise AuthenticationFailed
+        # decoded_token = Token.decodeToken(token)
+        order = Order.objects.filter(user=request.decoded["id"]).first()
         try:
             if not order:
-                user = User.objects.filter(id=decoded_token["id"]).first()
+                user = User.objects.filter(id=request.decoded["id"]).first()
                 newOrder=Order.objects.create(user=user)
-                request.data['user'] = decoded_token["id"]
+                request.data['user'] = request.decoded["id"]
                 print(request.data)
 
                 orderItemSerializer = OrderItemsSerializer(data=request.data)
@@ -38,10 +38,8 @@ class AddToCart(APIView):
                     return Response({"data": "Item added to your cart."}, status.HTTP_200_OK)
 
             else:
-                request.data['user'] = decoded_token["id"]
-                # print(request.data)
-                orderItem=OrderItems.objects.filter(user=decoded_token["id"],product=request.data['product']).first()
-                # print(orderItem)
+                request.data['user'] = request.decoded["id"]
+                orderItem=OrderItems.objects.filter(user=request.decoded["id"],product=request.data['product']).first()
 
                 if not orderItem:
                     orderItemSerializer = OrderItemsSerializer(data=request.data)
@@ -64,27 +62,20 @@ class AddToCart(APIView):
 class CartList(APIView):
    
     def get(self,request:Request):
-        token = request.META.get('HTTP_AUTHORIZATION', '')
-        if not token:
-            raise AuthenticationFailed
-        decoded_token = Token.decodeToken(token)
-        order=Order.objects.filter(user=decoded_token['id']).first()
+        order=Order.objects.filter(user=request.decoded['id']).first()
         serializer=CartSerializer(order)
         return Response(serializer.data,status.HTTP_200_OK)
     
     
         
 class CartDetail(APIView):
-    def get_order(self,request,pk:int):
-        token = request.META.get('HTTP_AUTHORIZATION', '')
-        if not token:
-            raise AuthenticationFailed
-        decoded_token = Token.decodeToken(token)
-        orderItem=OrderItems.objects.filter(user=decoded_token['id'],id=pk).first()
+    def get_order(self,user_id,pk:int):
+        orderItem=OrderItems.objects.filter(user=user_id,id=pk).first()
         return orderItem
     
     def delete(self,request:Request,pk):
-        orderItem=self.get_order(request,pk)
+        user_id=request.decoded['id']
+        orderItem=self.get_order(user_id,pk)
         orderItem.delete()
         return Response({"message":"item deleted from your cart"},status.HTTP_200_OK)
         
@@ -92,11 +83,8 @@ class CartDetail(APIView):
         token = request.META.get('HTTP_AUTHORIZATION', '')
         if not token:
             raise AuthenticationFailed
-        decoded_token = Token.decodeToken(token)
-        orderItem=OrderItems.objects.filter(user=decoded_token['id'],id=pk).first()
-        # orderItem=self.get_order(request,pk)
-        # print(orderItem['user'])
-        request.data['user']=decoded_token['id']
+        orderItem=OrderItems.objects.filter(user=request.decoded['id'],id=pk).first()
+        request.data['user']=request.decoded['id']
         serializer=OrderItemsSerializer(orderItem,data=request.data)
         try:
             serializer.is_valid(raise_exception=True)
