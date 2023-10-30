@@ -1,5 +1,7 @@
 asgiref==3.7.2
 async-timeout==4.0.3
+attrs==23.1.0
+az-iranian-bank-gateways==1.9.0
 backports.zoneinfo==0.2.1
 certifi==2023.7.22
 charset-normalizer==3.2.0
@@ -12,7 +14,15 @@ drf-yasg==1.21.7
 ghasedakpack==0.1.13
 idna==3.4
 inflection==0.5.1
+isodate==0.6.1
+lxml==4.9.3
+mongoengine==0.27.0
+mysqlclient==2.2.0
+numpy==1.24.4
 packaging==23.1
+Pillow==10.0.1
+platformdirs==3.11.0
+pycryptodome==3.19.0
 PyJWT==2.8.0
 pymongo==3.12.1
 python-dotenv==1.0.0
@@ -20,7 +30,11 @@ pytz==2023.3
 PyYAML==6.0.1
 redis==5.0.0
 requests==2.31.0
-sqlparse==0.2.4
+requests-file==1.5.1
+requests-toolbelt==1.0.0
+six==1.16.0
+sqlparse==0.4.4
 typing-extensions==4.7.1
 uritemplate==4.1.1
 urllib3==2.0.4
+zeep==4.2.1
