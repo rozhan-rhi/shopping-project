@@ -1,18 +1,32 @@
 import logging
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from django.urls import reverse
 from azbankgateways import bankfactories, models as bank_models, default_settings as settings
 from azbankgateways.exceptions import AZBankGatewaysException
+from cart.models import Order
+from cart.serializers import CartSerializer
 
 from django.http import HttpResponse, Http404
 from django.urls import reverse
 
 
-
+class SendData(APIView):
+    def get(self,request):
+        order=Order.objects.filter(user=request.decoded['id']).first()
+        serializer=CartSerializer(order)
+        print(serializer.data)
+        return Response({'price':serializer.data['total_price']},status.HTTP_200_OK)
+    
+    
+        
 def go_to_gateway_view(request):
     # خواندن مبلغ از هر جایی که مد نظر است
-    amount = 10000
+    amount = request.data['price']
     # تنظیم شماره موبایل کاربر از هر جایی که مد نظر است
-    mobile_number = "09012869719"  # اختیاری
+    mobile_number=request.decoded["phone"]
+    # mobile_number = "09012869719"  # اختیاری
 
     factory = bankfactories.BankFactory()
     try:

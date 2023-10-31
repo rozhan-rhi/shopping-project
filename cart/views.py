@@ -17,10 +17,6 @@ class AddToCart(APIView):
     # @AdminAuthMiddleware
     def post(self,request:Request):
         print(request.decoded)
-        # token = request.META.get('HTTP_AUTHORIZATION', '')
-        # if not token:
-        #     raise AuthenticationFailed
-        # decoded_token = Token.decodeToken(token)
         order = Order.objects.filter(user=request.decoded["id"]).first()
         try:
             if not order:
@@ -62,6 +58,7 @@ class AddToCart(APIView):
 class CartList(APIView):
    
     def get(self,request:Request):
+        print(request.decoded)
         order=Order.objects.filter(user=request.decoded['id']).first()
         serializer=CartSerializer(order)
         return Response(serializer.data,status.HTTP_200_OK)
