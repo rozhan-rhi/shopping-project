@@ -8,13 +8,8 @@ from home.utils.token import Token
 from cart.serializers import OrderSerializer,OrderItemsSerializer,CartSerializer
 from users.models import User
 from home.middleware.authMiddleware import JwtMiddleware
-# from django.utils.decorators import method_decorator
-# from home.middleware.authMiddleware //import CheckJwtMiddleware,custom_middleware_decorator
 
-
-# @method_decorator(CheckJwtMiddleware,name='dispatch')
 class AddToCart(APIView):
-    # @AdminAuthMiddleware
     def post(self,request:Request):
         print(request.decoded)
         order = Order.objects.filter(user=request.decoded["id"]).first()
