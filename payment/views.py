@@ -24,9 +24,9 @@ class SendData(APIView):
 def go_to_gateway_view(request):
     # خواندن مبلغ از هر جایی که مد نظر است
     amount = request.data['price']
+    
     # تنظیم شماره موبایل کاربر از هر جایی که مد نظر است
     mobile_number=request.decoded["phone"]
-    # mobile_number = "09012869719"  # اختیاری
 
     factory = bankfactories.BankFactory()
     try:
