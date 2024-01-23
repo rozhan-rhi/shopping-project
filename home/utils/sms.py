@@ -14,12 +14,7 @@ class MessageSending:
                 'param1': param1
             }
 
-            # payload = {
-            #     'receptor': receptor,
-            #     "type": "1",  # 1:sms   2:voice
-            #     "template": "قالب شماره  1",
-            #     'param1': otp
-            # }
+
             sms = ghasedakpack.Ghasedak(API_KEY)
             sms.verification(payload)
 
